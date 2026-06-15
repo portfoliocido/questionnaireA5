@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire Auto-Évaluation Portfolio A5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6e0b14 0%, #b21f35 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6e0b14 0%, #b21f35 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.95; font-size: 1.1em; }
+
+        .content { padding: 40px; }
+        .form-section { margin-bottom: 30px; }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #8b1a2b;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 3px solid #6e0b14;
+            padding-bottom: 10px;
+        }
+
+        label { display: block; margin-bottom: 10px; font-weight: 500; color: #333; }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus { outline: none; border-color: #6e0b14; background: #fdf4f5; }
+
+        .intro-box {
+            background: #fbeef0;
+            border-left: 4px solid #6e0b14;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .intro-box strong { color: #8b1a2b; }
+
+        .question-group {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #6e0b14;
+        }
+
+        .question-group.domaine2 { border-left-color: #11998e; }
+        .question-group.domaine3 { border-left-color: #4facfe; }
+        .question-group.domaine4 { border-left-color: #764ba2; }
+
+        .question-text { font-weight: 500; margin-bottom: 15px; color: #333; }
+
+        .rating-scale {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .rating-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .rating-btn:hover { border-color: #6e0b14; background: #fbeef0; }
+
+        .rating-btn.selected { background: #6e0b14; color: white; border-color: #6e0b14; }
+        .domaine2 .rating-btn.selected { background: #11998e; border-color: #11998e; }
+        .domaine3 .rating-btn.selected { background: #4facfe; border-color: #4facfe; }
+        .domaine4 .rating-btn.selected { background: #764ba2; border-color: #764ba2; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #6e0b14 0%, #b21f35 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(110, 11, 20, 0.3); }
+
+        .results {
+            display: none;
+            background: #f5f7fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .results.show { display: block; animation: slideIn 0.5s ease; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title { font-size: 1.8em; color: #8b1a2b; margin-bottom: 20px; text-align: center; }
+
+        .score-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid #6e0b14;
+        }
+
+        .score-card.domaine2 { border-left-color: #11998e; }
+        .score-card.domaine3 { border-left-color: #4facfe; }
+        .score-card.domaine4 { border-left-color: #764ba2; }
+
+        .score-card h3 { margin-bottom: 15px; color: #333; }
+
+        .level-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .level-segment { height: 12px; border-radius: 4px; background: #e0e0e0; }
+
+        .level-segment.active { background: #6e0b14; }
+        .score-card.domaine2 .level-segment.active { background: #11998e; }
+        .score-card.domaine3 .level-segment.active { background: #4facfe; }
+        .score-card.domaine4 .level-segment.active { background: #764ba2; }
+
+        .level-name { font-weight: 600; color: #8b1a2b; margin-top: 10px; }
+        .score-card.domaine2 .level-name { color: #0d7a70; }
+        .score-card.domaine3 .level-name { color: #00a5cf; }
+        .score-card.domaine4 .level-name { color: #764ba2; }
+
+        .global-score {
+            background: linear-gradient(135deg, #6e0b14 0%, #b21f35 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .global-score h2 { margin-bottom: 10px; }
+        .score-number { font-size: 3em; font-weight: bold; margin-bottom: 10px; }
+
+        .btn-restart {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: white;
+            color: #8b1a2b;
+            border: 2px solid white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-restart:hover { background: #f5f7fa; }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6e0b14 0%, #b21f35 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show { display: block; }
+
+        @media (max-width: 768px) {
+            .header { padding: 30px 20px; }
+            .content { padding: 20px; }
+            .rating-scale { grid-template-columns: repeat(2, 1fr); }
+            .header h1 { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Questionnaire Auto-Évaluation</h1>
+            <p>Portfolio A5 — La Professionnalité : capturez votre pratique EN DIRECT</p>
+        </div>
+
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <form id="surveyForm">
+                <div class="form-section">
+                    <div class="section-title">📍 Situation clinique du moment</div>
+
+                    <div class="intro-box">
+                        💡 <strong>Mode d'utilisation :</strong> Vous vivez une situation significative <strong>EN CE MOMENT</strong> (une décision clinique en autonomie, une réorientation, une coopération avec le corps médical, une remise en question liée à votre mémoire, une étape de votre projet d'installation). Remplissez ce questionnaire <strong>au présent</strong>, pour capturer votre pratique en direct. Vous pourrez le remplir <strong>plusieurs fois au cours de l'année</strong> avec différentes situations. À la fin de A5, vous choisirez les <strong>meilleures fiches</strong> pour votre portfolio final.
+                    </div>
+
+                    <label for="situation"><strong>Décrivez la situation que vous vivez en ce moment.</strong> (Soyez aussi détaillé(e) que possible : quel patient, quel contexte, quelle décision ou quelle réflexion ? qu'est-ce qui engage votre autonomie, votre éthique, votre esprit critique ou votre projet professionnel ?)</label>
+                    <textarea id="situation" name="situation" required placeholder="Écrivez la situation que vous vivez maintenant..."></textarea>
+                </div>
+
+                <!-- DOMAINE 1 : L'INCARNATION DU RAISONNEMENT -->
+                <div class="form-section">
+                    <div class="section-title">🌿 Domaine 1 : L'Incarnation du Raisonnement (toucher & intuition)</div>
+
+                    <div class="question-group">
+                        <div class="question-text">1. En ce MOMENT (ou récemment), vous arrive-t-il de prendre une décision de traitement "à l'instinct" ou guidée par le tissu, en dehors d'un protocole classique ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d1q1">1 - Non, je m'en tiens au protocole</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d1q1">2 - Rarement, et avec malaise</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d1q1">3 - Oui, je m'autorise cette écoute</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d1q1">4 - Oui, c'est intégré à ma pratique</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group">
+                        <div class="question-text">2. Rationalisez-vous et sécurisez-vous cette intuition a posteriori ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d1q2">1 - Non, je ne la questionne pas</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d1q2">2 - Un peu</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d1q2">3 - Oui, je la relis avec ma raison</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d1q2">4 - Oui, systématiquement et rigoureusement</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group">
+                        <div class="question-text">3. Arrivez-vous à expliquer la fusion entre vos savoirs théoriques solides et vos perceptions subjectives ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d1q3">1 - Non, je les vis comme opposés</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d1q3">2 - Difficilement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d1q3">3 - Oui, je vois leur complémentarité</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d1q3">4 - Oui, savoir et perception ne font qu'un</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group">
+                        <div class="question-text">4. Êtes-vous capable d'argumenter cette décision "intuitive" de manière scientifique et professionnelle face à un tuteur ou un médecin ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d1q4">1 - Non, je ne saurais pas la défendre</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d1q4">2 - Avec difficulté</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d1q4">3 - Oui, je peux l'argumenter</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d1q4">4 - Oui, avec un raisonnement clair et crédible</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group">
+                        <div class="question-text">5. Êtes-vous désormais capable de vous auto-superviser face à l'incertitude sans paniquer ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d1q5">1 - Non, l'incertitude me déstabilise</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d1q5">2 - Difficilement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d1q5">3 - Oui, je gère plutôt bien</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d1q5">4 - Oui, je m'auto-supervise sereinement</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOMAINE 2 : ÉTHIQUE & INTERPROFESSIONNALITÉ -->
+                <div class="form-section">
+                    <div class="section-title">⚖️ Domaine 2 : Éthique & Interprofessionnalité</div>
+
+                    <div class="question-group domaine2">
+                        <div class="question-text">6. Faites-vous face en ce moment aux limites de votre champ de compétences (réorientation nécessaire, doute éthique) ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d2q1">1 - Oui, et je ne sais pas quoi faire</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d2q1">2 - Oui, c'est délicat</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d2q1">3 - Oui, et je sais les reconnaître</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d2q1">4 - Oui, et je les gère avec discernement</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine2">
+                        <div class="question-text">7. Gérez-vous la communication avec le patient ET avec les autres professionnels de santé impliqués ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d2q2">1 - Non, je l'évite</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d2q2">2 - Difficilement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d2q2">3 - Oui, plutôt bien</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d2q2">4 - Oui, avec aisance et clarté</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine2">
+                        <div class="question-text">8. Identifiez-vous les obstacles (vocabulaire, susceptibilités) rencontrés lors de cette coopération interprofessionnelle ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d2q3">1 - Non, je ne les vois pas</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d2q3">2 - Vaguement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d2q3">3 - Oui, je les repère</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d2q3">4 - Oui, et je sais les anticiper</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine2">
+                        <div class="question-text">9. Adaptez-vous votre discours ostéopathique pour être compris et crédible face au corps médical ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d2q4">1 - Non, je garde mon jargon</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d2q4">2 - Une tentative</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d2q4">3 - Oui, j'adapte mon langage</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d2q4">4 - Oui, je suis compris et crédible</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine2">
+                        <div class="question-text">10. Réfléchissez-vous aux protocoles de communication à mettre en place dans votre futur cabinet pour fluidifier ces échanges ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d2q5">1 - Non, je n'y pense pas</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d2q5">2 - Vaguement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d2q5">3 - Oui, j'y réfléchis</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d2q5">4 - Oui, j'ai un plan concret</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOMAINE 3 : ESPRIT CRITIQUE -->
+                <div class="form-section">
+                    <div class="section-title">🔬 Domaine 3 : Esprit critique (lien avec le Mémoire)</div>
+
+                    <div class="question-group domaine3">
+                        <div class="question-text">11. Remettez-vous en question en ce moment une croyance ou "vérité" ostéopathique à travers vos recherches ou votre mémoire ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d3q1">1 - Non, je n'ose pas</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d3q1">2 - Timidement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d3q1">3 - Oui, je questionne activement</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d3q1">4 - Oui, c'est au cœur de ma démarche</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine3">
+                        <div class="question-text">12. Identifiez-vous ce qui vous amène à déconstruire ce dogme (preuves scientifiques, littérature contradictoire, échec clinique) ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d3q2">1 - Non, pas vraiment</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d3q2">2 - En partie</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d3q2">3 - Oui, je m'appuie sur des sources</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d3q2">4 - Oui, avec une démarche rigoureuse</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine3">
+                        <div class="question-text">13. Êtes-vous conscient(e) de la manière dont vous vivez ce changement de paradigme (déstabilisation, libération) ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d3q3">1 - Non, je n'y réfléchis pas</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d3q3">2 - Un peu</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d3q3">3 - Oui, j'en suis conscient(e)</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d3q3">4 - Oui, je comprends ce que ça transforme en moi</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine3">
+                        <div class="question-text">14. Cette nouvelle grille de lecture modifie-t-elle concrètement votre pratique manuelle aujourd'hui ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d3q4">1 - Non, ça reste théorique</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d3q4">2 - Un peu</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d3q4">3 - Oui, ma pratique évolue</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d3q4">4 - Oui, profondément et concrètement</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine3">
+                        <div class="question-text">15. Réfléchissez-vous à la place que vous accorderez à la recherche et à la formation continue dans votre carrière ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d3q5">1 - Non, ce n'est pas ma priorité</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d3q5">2 - Vaguement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d3q5">3 - Oui, j'y tiens</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d3q5">4 - Oui, c'est un engagement central de ma carrière</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOMAINE 4 : PROJET D'INSTALLATION & IDENTITÉ -->
+                <div class="form-section">
+                    <div class="section-title">🏛️ Domaine 4 : Projet d'Installation & Identité</div>
+
+                    <div class="question-group domaine4">
+                        <div class="question-text">16. Au-delà des contraintes administratives, identifiez-vous l'aspect de votre projet d'installation qui demande le plus d'introspection (lieu, public cible, travail en équipe ou seul) ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d4q1">1 - Non, je n'y ai pas réfléchi</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d4q1">2 - Vaguement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d4q1">3 - Oui, je l'identifie</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d4q1">4 - Oui, et je l'explore en profondeur</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine4">
+                        <div class="question-text">17. Voyez-vous en quoi ce projet est le reflet exact des valeurs cliniques et humaines que vous vous êtes forgées pendant 5 ans ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d4q2">1 - Non, je ne fais pas le lien</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d4q2">2 - Un peu</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d4q2">3 - Oui, je vois ce reflet</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d4q2">4 - Oui, mon projet incarne mes valeurs</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine4">
+                        <div class="question-text">18. Définissez-vous votre responsabilité sociétale et de santé publique en tant que futur professionnel de première intention ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d4q3">1 - Non, je n'y pense pas</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d4q3">2 - Vaguement</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d4q3">3 - Oui, j'en ai conscience</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d4q3">4 - Oui, je la définis clairement</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine4">
+                        <div class="question-text">19. Avez-vous identifié vos lignes rouges (éthiques ou financières) que vous refusez de franchir dans votre future installation ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d4q4">1 - Non, pas encore</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d4q4">2 - Quelques-unes, en gros</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d4q4">3 - Oui, je les ai posées</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d4q4">4 - Oui, clairement et fermement</button>
+                        </div>
+                    </div>
+
+                    <div class="question-group domaine4">
+                        <div class="question-text">20. Avez-vous une vision claire de l'ostéopathe que vous serez dans un an ?</div>
+                        <div class="rating-scale">
+                            <button type="button" class="rating-btn" data-value="1" data-question="d4q5">1 - Non, c'est flou</button>
+                            <button type="button" class="rating-btn" data-value="2" data-question="d4q5">2 - Une vague idée</button>
+                            <button type="button" class="rating-btn" data-value="3" data-question="d4q5">3 - Oui, une vision assez claire</button>
+                            <button type="button" class="rating-btn" data-value="4" data-question="d4q5">4 - Oui, une vision précise et incarnée</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Voir mes résultats</button>
+            </form>
+
+            <!-- RÉSULTATS -->
+            <div class="results" id="results">
+                <div class="result-title">✨ Vos résultats</div>
+
+                <div class="score-card">
+                    <h3>🌿 Domaine 1 : L'Incarnation du Raisonnement</h3>
+                    <div class="level-bar">
+                        <div class="level-segment" id="d1-1"></div>
+                        <div class="level-segment" id="d1-2"></div>
+                        <div class="level-segment" id="d1-3"></div>
+                        <div class="level-segment" id="d1-4"></div>
+                    </div>
+                    <div class="level-name" id="d1-level"></div>
+                </div>
+
+                <div class="score-card domaine2">
+                    <h3>⚖️ Domaine 2 : Éthique & Interprofessionnalité</h3>
+                    <div class="level-bar">
+                        <div class="level-segment" id="d2-1"></div>
+                        <div class="level-segment" id="d2-2"></div>
+                        <div class="level-segment" id="d2-3"></div>
+                        <div class="level-segment" id="d2-4"></div>
+                    </div>
+                    <div class="level-name" id="d2-level"></div>
+                </div>
+
+                <div class="score-card domaine3">
+                    <h3>🔬 Domaine 3 : Esprit critique (Mémoire)</h3>
+                    <div class="level-bar">
+                        <div class="level-segment" id="d3-1"></div>
+                        <div class="level-segment" id="d3-2"></div>
+                        <div class="level-segment" id="d3-3"></div>
+                        <div class="level-segment" id="d3-4"></div>
+                    </div>
+                    <div class="level-name" id="d3-level"></div>
+                </div>
+
+                <div class="score-card domaine4">
+                    <h3>🏛️ Domaine 4 : Projet d'Installation & Identité</h3>
+                    <div class="level-bar">
+                        <div class="level-segment" id="d4-1"></div>
+                        <div class="level-segment" id="d4-2"></div>
+                        <div class="level-segment" id="d4-3"></div>
+                        <div class="level-segment" id="d4-4"></div>
+                    </div>
+                    <div class="level-name" id="d4-level"></div>
+                </div>
+
+                <div class="global-score">
+                    <h2>📊 Score Global</h2>
+                    <div class="score-number" id="globalScore">0/4</div>
+                    <p id="globalInterpretation"></p>
+                    <button type="button" class="btn-restart" onclick="location.reload()">➜ Analyser une autre situation</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #f5f5f5; padding: 30px 40px; text-align: center; border-top: 2px solid #e0e0e0; color: #666; font-size: 0.95em;">
+            <p style="margin-bottom: 10px;"><strong>💾 Comment utiliser ce questionnaire</strong></p>
+            <p>Ce questionnaire capture votre <strong>pratique EN DIRECT</strong>. Vous pouvez le remplir <strong>plusieurs fois au cours de l'année</strong> avec différentes situations. Chaque fiche sera stockée. À la fin de A5, vous choisirez les <strong>meilleures fiches</strong> (celles qui montrent votre professionnalité la plus aboutie) pour votre portfolio final.</p>
+            <p style="margin-top: 15px; font-size: 0.9em; color: #999;">Questionnaire A5 — Formation Ostéopathie | La Professionnalité : autonomie, éthique, installation</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('surveyForm');
+        const resultsDiv = document.getElementById('results');
+        const progressFill = document.getElementById('progressFill');
+        let responses = {};
+        const TOTAL_QUESTIONS = 20;
+        const DOMAINS = ['d1', 'd2', 'd3', 'd4'];
+
+        const levels = {
+            1: 'Récit Descriptif',
+            2: 'Constat / Bilan',
+            3: 'Analyse Transformatrice',
+            4: 'Intégration / Expertise'
+        };
+
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const question = btn.dataset.question;
+                const value = btn.dataset.value;
+
+                document.querySelectorAll(`[data-question="${question}"]`).forEach(b => {
+                    b.classList.remove('selected');
+                });
+
+                btn.classList.add('selected');
+                responses[question] = parseInt(value);
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            const answered = Object.keys(responses).length;
+            const progress = (answered / TOTAL_QUESTIONS) * 100;
+            progressFill.style.width = progress + '%';
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const situation = document.getElementById('situation').value.trim();
+            if (!situation) {
+                showError('Veuillez décrire une situation clinique.');
+                return;
+            }
+
+            if (Object.keys(responses).length < TOTAL_QUESTIONS) {
+                showError('Veuillez répondre à toutes les questions.');
+                return;
+            }
+
+            calculateAndDisplayResults();
+        });
+
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+            setTimeout(() => errorMsg.classList.remove('show'), 5000);
+        }
+
+        function calculateAndDisplayResults() {
+            let totalSum = 0;
+            DOMAINS.forEach(d => {
+                const avg = (responses[d+'q1'] + responses[d+'q2'] + responses[d+'q3'] + responses[d+'q4'] + responses[d+'q5']) / 5;
+                const level = getLevel(avg);
+                displayDomainResults(d, level);
+                totalSum += avg;
+            });
+
+            const globalAvg = totalSum / DOMAINS.length;
+            document.getElementById('globalScore').textContent = globalAvg.toFixed(2) + '/4';
+            document.getElementById('globalInterpretation').textContent = getGlobalInterpretation(globalAvg);
+
+            resultsDiv.classList.add('show');
+            form.style.display = 'none';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getLevel(average) {
+            if (average <= 1.5) return 1;
+            if (average <= 2.5) return 2;
+            if (average <= 3.5) return 3;
+            return 4;
+        }
+
+        function displayDomainResults(domain, level) {
+            for (let i = 1; i <= 4; i++) {
+                const segment = document.getElementById(`${domain}-${i}`);
+                if (i <= level) {
+                    segment.classList.add('active');
+                }
+            }
+            document.getElementById(`${domain}-level`).textContent = `Niveau ${level} : ${levels[level]}`;
+        }
+
+        function getGlobalInterpretation(score) {
+            if (score <= 1.5) {
+                return 'Vous explorez encore cette situation. Continuez à vous questionner sur ce que vous vivez dans votre pratique autonome de futur professionnel.';
+            } else if (score <= 2.5) {
+                return 'Vous avez une bonne prise de conscience. Allez plus loin en reliant vos décisions à vos valeurs et à votre projet professionnel.';
+            } else if (score <= 3.5) {
+                return 'Vous démontrez une réflexion mature et professionnelle. Reliez maintenant ces éléments à la vision de l\'ostéopathe que vous voulez incarner.';
+            } else {
+                return 'Excellent ! Vous incarnez une professionnalité aboutie : autonomie, éthique, esprit critique et identité claire. Vous êtes prêt(e) à devenir le praticien que vous avez choisi d\'être.';
+            }
+        }
+    </script>
+</body>
+</html>
